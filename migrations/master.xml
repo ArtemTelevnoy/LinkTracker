@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--suppress XmlUnusedNamespaceDeclaration -->
+<databaseChangeLog
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.14.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="create-filters-table" author="me">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="filters"/>
+            </not>
+        </preConditions>
+        <sqlFile path="tables/1_filters_table.sql"/>
+    </changeSet>
+
+    <changeSet id="create-tags-table" author="me">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="tags"/>
+            </not>
+        </preConditions>
+        <sqlFile path="tables/2_tags_table.sql"/>
+    </changeSet>
+
+    <changeSet id="create-users-table" author="me">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
+        <sqlFile path="tables/3_users_table.sql"/>
+    </changeSet>
+
+    <changeSet id="create-links-table" author="me">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="links"/>
+            </not>
+        </preConditions>
+        <sqlFile path="tables/4_links_table.sql"/>
+    </changeSet>
+
+    <changeSet id="create-user_links-table" author="me">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_links"/>
+            </not>
+        </preConditions>
+        <sqlFile path="tables/5_user_links_table.sql"/>
+    </changeSet>
+
+    <changeSet id="create-settings-table" author="me">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="settings"/>
+            </not>
+        </preConditions>
+        <sqlFile path="tables/6_settings_table.sql"/>
+    </changeSet>
+
+</databaseChangeLog>

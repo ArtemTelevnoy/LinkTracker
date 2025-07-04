@@ -1,0 +1,91 @@
+app:
+  telegram-token: ${TELEGRAM_TOKEN}
+  scrapper-base-url: ${SCRAPPER_BASE_URL:http://localhost:8081}
+  message-transport: ${MESSAGE_TRANSPORT:HTTP}
+  updates-topic-name: ${UPDATES_TOPIC_NAME:updates}
+  dlq-topic-name: ${DLQ_TOPIC_NAME:dlq}
+  timeout-duration: 3000
+  retry-codes: [429, 500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511]
+  endpointsRateLimiter:
+    timeout-duration: 0s
+    limit-for-period: 3
+    limit-refresh-period: 5s
+
+
+spring:
+  application:
+    name: bot
+  liquibase:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  config:
+    import: optional:file:.env[.properties]
+  kafka:
+    bootstrap-servers: localhost:19092,localhost:29092
+    producer.properties:
+      acks: 1
+      batch.size: 1024
+      linger.ms: 10000
+      schema.registry.url: http://localhost:8083
+    consumer.properties:
+      enable.auto.commit: false
+      auto.offset.reset: earliest
+      isolation.level: read_committed
+      fetch.min.bytes: 1024
+      fetch.max.bytes: 1048576
+      fetch.max.wait.ms: 10000
+      max.poll.interval.ms: 10000
+      max.poll.records: 10
+      schema.registry.url: http://localhost:8083
+    consumer:
+      group-id: consumerGroupId
+  data:
+    redis:
+      host: localhost
+      port: 6378
+
+server:
+  port: 8080
+
+management:
+  server:
+    port: 8070
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: /metrics
+      exposure:
+        include: health, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+
+resilience4j.retry:
+  instances:
+    webClientRetry:
+      max-attempts: 3
+      wait-duration: 500
+      retry-exceptions:
+        - backend.academy.dto.api.SupportedErrorCodeException
+
+resilience4j.circuitbreaker:
+  instances:
+    webClientCircuitBreaker:
+      sliding-window-type: COUNT_BASED
+      sliding-window-size: 10
+      minimum-number-of-calls: 10
+      failure-rate-threshold: 100
+      wait-duration-in-openState: 1s
+      permitted-number-of-calls-in-half-open-state: 1
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
